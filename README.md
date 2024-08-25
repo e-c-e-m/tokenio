@@ -18,6 +18,8 @@ There are two pages:
 - `app/page.tsx`
 - `app/details/[tokenSymbol]/[chainId]/page.tsx`
 
+Firstly, I decided to use Tailwind to manage the app's css. I really like using Tailwind as it allows easier and quicker styling (in my opinion). If creating something more complex in design, Tailwind may not be a good choice due to the fact that normal tsx files could become bloated with Tailwind styling. 
+
 I have kept the pages as server components and placed the api fetching within these as I believe this is better practice due to the benefits associated.
 [See benefits listed here](https://nextjs.org/docs/app/building-your-application/rendering/server-components)
 
