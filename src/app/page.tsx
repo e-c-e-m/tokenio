@@ -1,7 +1,10 @@
 import TokenOverview from "@/components/TokenOverview/TokenOverview";
 
 export default async function Page() {
-  const res = await fetch('https://li.quest/v1/tokens');
+  // Revalidate at the most every hour (ISR). Prior to Nextjs 13 onwards, getStaticProps could be used however
+  // getStaticProps and getStaticPaths are obsolete in the newer versions of Nextjs. 
+  
+  const res = await fetch('https://li.quest/v1/tokens', { next: { revalidate: 3600 } });
   const data = await res.json();
 
   return (
