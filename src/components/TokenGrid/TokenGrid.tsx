@@ -1,3 +1,5 @@
+"use client";
+
 import { Token } from "@/types/token";
 import React, { useCallback, useEffect, useMemo, useState, useRef } from "react";
 
@@ -5,95 +7,63 @@ import { AgGridReact, CustomCellRendererProps } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { ColDef, CellClickedEvent } from "ag-grid-community";
-import Image from "next/image";
-import { pink } from "@mui/material/colors";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+
 import { useRouter } from "next/navigation";
+import { useSearchContext } from "@/app/context/SearchContext";
+import { FavoriteCellRenderer, LogoCellRenderer } from "./CellRenderers/CellRenderers";
+
 
 interface TokenGridProps {
   tokens: Token[];
-  quickFilterText: string;
 }
 
-const FavoriteCellRenderer = (
-  props: CustomCellRendererProps & { toggleFavorite: (chainId: number, address: string) => void, isFavourited: boolean }
-) => {
-  const { toggleFavorite, data } = props;
-
-  // Determine if the current token is favorited based on the passed props
-  const isFavorited = props?.isFavourited;
-
-  return (
-    <button
-      onClick={(e) => {
-        e.stopPropagation(); // Prevent row click event
-        toggleFavorite(data.chainId, data.address);
-      }}
-      style={{
-        backgroundColor: "transparent",
-        border: "none",
-        cursor: "pointer",
-      }}
-    >
-      {isFavorited ? <FavoriteIcon sx={{ color: pink[500] }} /> : <FavoriteBorderIcon />}
-    </button>
-  );
-};
-
-const LogoCellRenderer = (params: CustomCellRendererProps) => (
-  <span className="flex items-center justify-start p-0.5">
-    {params.value && <Image alt="Token logo" src={params.value} height={35} width={35} />}
-  </span>
-);
-
-const TokenGrid = ({ tokens, quickFilterText }: TokenGridProps) => {
-  const [favoritedTokens, setFavoritedTokens] = useState<{ chainId: number; address: string }[]>([]);
+const TokenGrid = ({ tokens }: TokenGridProps) => {
+  const [favouritedTokens, setFavouritedTokens] = useState<{ chainId: number; address: string }[]>([]);
+  const { searchTerm } = useSearchContext()
   const hasLoadedFromLocalStorage = useRef(false);
   const router = useRouter();
 
-  // Load favorited tokens from localStorage
+  // Check that window is available and then load favorited tokens from localStorage.
   useEffect(() => {
     if (typeof window !== "undefined" && !hasLoadedFromLocalStorage.current) {
-      const savedFavorites = localStorage.getItem("favouritedTokens");
-      console.log("Loaded from localStorage:", savedFavorites);
-      if (savedFavorites) {
-        setFavoritedTokens(JSON.parse(savedFavorites));
+      const savedFavourites = localStorage.getItem("favouritedTokens");
+      if (savedFavourites) {
+        setFavouritedTokens(JSON.parse(savedFavourites));
       }
       hasLoadedFromLocalStorage.current = true;
     }
   }, []);
 
-  // Save the favorited tokens to localStorage whenever it changes
+  // Save the favourited tokens to localStorage whenever it changes.
   useEffect(() => {
     if (typeof window !== "undefined" && hasLoadedFromLocalStorage.current) {
-      console.log("Saving to localStorage:", favoritedTokens);
-      localStorage.setItem("favouritedTokens", JSON.stringify(favoritedTokens));
+      localStorage.setItem("favouritedTokens", JSON.stringify(favouritedTokens));
     }
-  }, [favoritedTokens]);
+  }, [favouritedTokens]);
 
   // Function to toggle the favorite state
   const toggleFavorite = useCallback((chainId: number, address: string) => {
-    setFavoritedTokens(prevTokens => {
+    setFavouritedTokens(prevTokens => {
       const exists = prevTokens.some(token => token.chainId === chainId && token.address === address);
       if (exists) {
-        console.log("Removing from favorites:", { chainId, address });
         return prevTokens.filter(token => !(token.chainId === chainId && token.address === address));
       } else {
-        console.log("Adding to favorites:", { chainId, address });
         return [...prevTokens, { chainId, address }];
       }
     });
   }, []);
 
-  // Prepare the data to be displayed and pinned
+  // These functions work with Ag-grid to ensure that favourited tokens are pinned at the top of the grid. They filter through the 
+  // tokens to check if/if not a favourited token's chainId and address (from localStorage) match a token's chainId and address.
+  // useMemo is being used to improve efficientcy of app.
+
   const pinnedTopRowData = useMemo(() => {
-    return tokens.filter(token => favoritedTokens.some(fav => fav.chainId === token.chainId && fav.address === token.address));
-  }, [tokens, favoritedTokens]);
+    return tokens.filter(token => favouritedTokens.some(fav => fav.chainId === token.chainId && fav.address === token.address));
+  }, [tokens, favouritedTokens]);
 
   const nonPinnedRowData = useMemo(() => {
-    return tokens.filter(token => !favoritedTokens.some(fav => fav.chainId === token.chainId && fav.address === token.address));
-  }, [tokens, favoritedTokens]);
+    return tokens.filter(token => !favouritedTokens.some(fav => fav.chainId === token.chainId && fav.address === token.address));
+  }, [tokens, favouritedTokens]);
 
   const columnDefs: ColDef[] = useMemo(
     () => [
@@ -102,7 +72,7 @@ const TokenGrid = ({ tokens, quickFilterText }: TokenGridProps) => {
         field: "isFavourited",
         cellRenderer: FavoriteCellRenderer,
         cellRendererParams: (params: CustomCellRendererProps) => {
-          const isFavourited = favoritedTokens.some(
+          const isFavourited = favouritedTokens.some(
             fav => fav.chainId === params.data.chainId && fav.address === params.data.address
           );
           console.log("isFavorited:", isFavourited, "for", params.data);
@@ -130,7 +100,7 @@ const TokenGrid = ({ tokens, quickFilterText }: TokenGridProps) => {
       { headerName: "Price (USD)", field: "priceUSD" },
       { headerName: "Coin Key", field: "coinKey" },
     ],
-    [toggleFavorite, favoritedTokens]
+    [toggleFavorite, favouritedTokens]
   );
 
   const onCellClicked = (event: CellClickedEvent) => {
@@ -150,7 +120,7 @@ const TokenGrid = ({ tokens, quickFilterText }: TokenGridProps) => {
           rowSelection="single"
           onCellClicked={onCellClicked}
           defaultColDef={{ sortable: true }}
-          quickFilterText={quickFilterText}
+          quickFilterText={searchTerm}
           cacheQuickFilter={true}
         />
       </div>
