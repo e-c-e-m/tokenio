@@ -75,7 +75,6 @@ const TokenGrid = ({ tokens }: TokenGridProps) => {
           const isFavourited = favouritedTokens.some(
             fav => fav.chainId === params.data.chainId && fav.address === params.data.address
           );
-          console.log("isFavorited:", isFavourited, "for", params.data);
           return {
             toggleFavorite,
             isFavourited,
