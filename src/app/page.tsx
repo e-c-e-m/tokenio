@@ -1,3 +1,4 @@
+import ErrorBlock from "@/components/ErrorBlock/ErrorBlock";
 import TokenOverview from "@/components/TokenOverview/TokenOverview";
 
 export default async function Page() {
@@ -9,9 +10,8 @@ export default async function Page() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-start pt-0 p-3 bg-main">
-      <TokenOverview 
-      tokens={data.tokens} 
-      />
+      {res.ok ? <TokenOverview tokens={data.tokens} /> : <ErrorBlock />} 
+
     </main>
   );
 }

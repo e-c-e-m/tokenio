@@ -1,3 +1,4 @@
+import ErrorBlock from "@/components/ErrorBlock/ErrorBlock";
 import TokenDetails from "@/components/TokenDetails/TokenDetails";
 
 export default async function Page({ params }: { params: { chainId: string, tokenSymbol: string }}) {
@@ -6,7 +7,7 @@ export default async function Page({ params }: { params: { chainId: string, toke
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-start pt-0 p-3 bg-main">
-      <TokenDetails token={data} />
+      {res.ok ? <TokenDetails token={data} /> : <ErrorBlock />} 
     </main>
   );
 }

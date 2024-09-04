@@ -69,7 +69,7 @@ const TokenDetails = ({ token }: TokenDetailsProps) => {
           {token.name}
         </h2>
         <button
-          className="h-min flex flex-row items-center border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+          className="h-min flex flex-row items-center border focus:outline-none focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 bg-gray-800 text-white border-gray-600 hover:bg-gray-700 hover:border-gray-600 focus:ring-gray-700"
           onClick={toggleFavorite}
         >
           {isFavorited ? (
@@ -106,7 +106,7 @@ const TokenDetails = ({ token }: TokenDetailsProps) => {
         </div>
       </div>
       <button
-        className="h-min flex flex-row items-center mt-4 py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+        className="h-min flex flex-row items-center mt-4 py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border hover:bg-gray-100 focus:z-10 focus:ring-4 focus:ring-gray-100 focus:ring-gray-700 bg-gray-800 text-gray-400 border-gray-600 hover:text-white hover:bg-gray-700"
         onClick={() => router.push(`/`)}
       >
         <ArrowBackIosNewIcon className="mr-2" />

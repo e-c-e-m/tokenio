@@ -9,8 +9,9 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 import { ColDef, CellClickedEvent } from "ag-grid-community";
 
 import { useRouter } from "next/navigation";
-import { useSearchContext } from "@/app/context/SearchContext";
+
 import { FavoriteCellRenderer, LogoCellRenderer } from "./CellRenderers/CellRenderers";
+import { useSearchContext } from "@/context/SearchContext";
 
 
 interface TokenGridProps {
