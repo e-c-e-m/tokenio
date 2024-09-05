@@ -53,7 +53,8 @@ The localStorage object is part of the window object, which is only present in w
 ## Improvements
 - Perhaps some of the logic for localStorage/favourites could become shared util functions as it is used in both `<TokenDetails />` and `<TokenGrid />`. 
 - When you favourite a token in the grid, the token gets pinned to the top of the grid however you lose your scroll position at the same time. Ideally, the user should remain in their current scroll position.
-- There should be more loading states throughout the app. For example, on the token details page it would make sense to use some sort of loading skeleton. 
+- There should be more loading states throughout the app. For example, on the token details page it would make sense to use some sort of loading skeleton.
+- generateStaticParams could be used for the dynamic routes 
 
 
 There are also some small comments throughout the code to explain certain things! 🥳
